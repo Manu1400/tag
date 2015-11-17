@@ -10,7 +10,7 @@ function getTagsSearch() {
    var result = [];
    //Parse url query
    decodeURIComponent(location.search).split('&').forEach(function (item) {
-      tmp = item.split("="); //console.log(tmp);
+      tmp = item.split("=");
       if (tmp[0].contains('_plugin_tag_tag_values[]')) {
          result.push(decodeURIComponent(tmp[1]));
       }
@@ -80,52 +80,10 @@ function showTagsOnKB(selector_id, selector_name) {
 
 //Quick fix : search event on all webpage
 $("html").on("tabsload", function( event, ui ) {
-   console.log(ui.panel.selector);
-
    if (ui.panel.selector == "#ui-tabs-1") {
       showTagsOnKB(1, ui.panel.selector);
    }
    if (ui.panel.selector == "#ui-tabs-2") {
       showTagsOnKB(2, ui.panel.selector);
    }
-});
-
-$(document).ready(function() {
-
-   //TODO : Add on 'Parcourir' tab (second tab)
-
-   //Add tag to form only on the first tab (tab 'Search')
-   /*
-   $(".ui-tabs-panel:visible:contains('Knowbase$1')").ready(function() { //find("input[type='submit']:visible"
-      console.log("Knowbase$1");
-      showTagsOnKB();
-   });
-
-   $(".ui-tabs-panel:visible:contains('Knowbase$2')").ready(function() { //find("input[type='submit']:visible"
-      console.log("Knowbase$2");
-      showTagsOnKB();
-   });
-   */
-   /*
-   $("div[aria-expanded='true']").ready(function() {
-      console.log('expanded');
-      showTagsOnKB();
-   });
-
-   $("#tabspanel + div.ui-tabs").on("tabsload", function( event, ui ) {
-      console.log(ui.panel.selector);
-      if (ui.panel.selector == "#ui-tabs-2") {
-         showTagsOnKB(2);
-      }
-      if (ui.panel.selector == "#ui-tabs-1") {
-         showTagsOnKB(1);
-      }
-   });
-*/
-
-   $(".ui-tabs-panel:visible").find(".headerRow:visible").ready(function() {
-      //showTagsOnKB();
-   });
-
-
 });
