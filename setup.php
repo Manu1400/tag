@@ -32,6 +32,11 @@ function plugin_init_tag() {
          $PLUGIN_HOOKS['plugin_uninstall_after']['tag'][$uninstall_itemtype] = 'plugin_uninstall_after_tag';
       }
    }
+
+   // On KB search interface, add tag filter on UI
+   if (strpos($_SERVER['REQUEST_URI'], "front/knowbaseitem.php") !== false) {
+      $PLUGIN_HOOKS['add_javascript']['tag'][] = 'js/show_tags_on_kb.js';
+   }
    
    // only on itemtype form
    if (preg_match_all("/.*\/(.*)\.form\.php/", $_SERVER['REQUEST_URI'], $matches) !== false) {

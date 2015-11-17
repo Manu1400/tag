@@ -314,10 +314,58 @@ class PluginTagTag extends CommonDropdown {
             $CFG_GLPI['root_doc']."/plugins/tag/front/tag.form.php?popup=1&amp;rand=".$rand."', ".
             "'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
    }
+
+   static function tagDropdownMultipleSearchKB() {
+
+      $itemtype = 'KnowbaseItem';
+
+      $obj = new $itemtype();
+
+      //filter by type
+      $where = "(type_menu = 'tools' OR type_menu = '') ";
+
+      //TODO : ENTITIES
+      //Session ou $_SESSION ?
+      //$_SESSION['glpiactive_entity'] ET $_SESSION['glpiactive_entity_recursive']
+
+      // restrict tag by entity if current object has entity
+      //$obj->getFromDB($ID);
+      //if (isset($obj->fields['entities_id'])) {
+      //   $where .= getEntitiesRestrictRequest("AND", '', '', $obj->fields['entities_id'], true);
+      //}
+
+      // Propose only tags used in Knowbaseitem
+      $tag_id_used = array();
+
+      $tag_item = new PluginTagTagItem();
+      foreach ($tag_item->find('itemtype = "Knowbaseitem"') as $found_item) {
+         $tag_id_used[] = $found_item["plugin_tag_tags_id"];
+      }
+
+      if (!empty($tag_id_used)) {
+         $where .= "AND id IN (".implode(',', $tag_id_used).") ";
+      }
+
+      $selected_id = isset($_REQUEST['_plugin_tag_tag_values']) ? explode(",", $_REQUEST['_plugin_tag_tag_values']) : array();
+
+      //Note : code duplicated (with tagDropdownMultiple function)
+      echo "<select data-placeholder='".__('Choose tags...', 'tag').self::MNBSP."' name='_plugin_tag_tag_values[]'
+          id='tag_select' multiple class='chosen-select-no-results' style='width:80%;' >";
+
+      $tag = new self();
+      foreach ($tag->find($where, 'name') as $label) {
+         $param = in_array($label['id'], $selected_id) ? ' selected ' : '';
+         $param .= 'data-color-option="'.$label['color'].'"';
+         echo '<option value="'.$label['id'].'" '.$param.'>'.$label['name'].'</option>';
+      }
+      echo "</select>";
+
+      //TODO : Modifier target /glpi-090-git/glpi/front/knowbaseitem.php
+   }
    
-   static function tagDropdownMultiple($options = array()) {
+   static function tagDropdownMultiple($itemtype, $ID) {
       
-      $itemtype = self::getItemtype($_REQUEST['itemtype'], $_REQUEST['id']);
+      $itemtype = self::getItemtype($itemtype, $ID);
       $obj = new $itemtype();
 
       // Object must be an instance of CommonDBTM (or inherint of this)
@@ -325,15 +373,12 @@ class PluginTagTag extends CommonDropdown {
         return;
       }
 
-      $obj->getFromDB($_REQUEST['id']);
+      $obj->getFromDB($ID);
       $sel_attr = $obj->canUpdateItem() ? '' : ' disabled ';
-
-      echo "<select data-placeholder='".__('Choose tags...', 'tag').self::MNBSP."' name='_plugin_tag_tag_values[]'
-          id='tag_select' multiple class='chosen-select-no-results' ".$sel_attr." style='width:80%;' >";
 
       $selected_id = array();
       $tag_item = new PluginTagTagItem();
-      foreach ($tag_item->find('items_id='.$_REQUEST['id'].' 
+      foreach ($tag_item->find('items_id='.$ID.' 
                                       AND itemtype="'.$itemtype.'"') as $found_item) {
          $selected_id[] = $found_item['plugin_tag_tags_id'];
       }
@@ -347,6 +392,9 @@ class PluginTagTag extends CommonDropdown {
          $field = $obj->getType() == 'Entity' ? 'id' : 'entities_id';
          $where .= getEntitiesRestrictRequest("AND", '', '', $obj->fields[$field], true);
       }
+
+      echo "<select data-placeholder='".__('Choose tags...', 'tag').self::MNBSP."' name='_plugin_tag_tag_values[]'
+          id='tag_select' multiple class='chosen-select-no-results' ".$sel_attr." style='width:80%;' >";
 
       $tag = new self();
       foreach ($tag->find($where, 'name') as $label) {
