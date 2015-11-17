@@ -1,5 +1,5 @@
 //@see http://ericleads.com/2013/10/javascript-string-contains/
-if (!('contains' in String.prototype)) {
+if (!('contains' in String.prototype)) { //exist on ECMAScript 2015 (ES6)
    String.prototype.contains = function(str, startIndex) {
       return ''.indexOf.call(this, str, startIndex) !== -1;
    };
@@ -9,7 +9,7 @@ if (!('contains' in String.prototype)) {
 function getTagsSearch() {
    var result = [];
    //Parse url query
-   decodeURIComponent(location.search).split('&').forEach(function (item) { //console.log(item);
+   decodeURIComponent(location.search).split('&').forEach(function (item) {
       tmp = item.split("="); //console.log(tmp);
       if (tmp[0].contains('_plugin_tag_tag_values[]')) {
          result.push(decodeURIComponent(tmp[1]));
@@ -18,24 +18,6 @@ function getTagsSearch() {
 
    return result.join(",");
 }
-
-/*
-// Buggy
-function parseUrl(val) {
-    var result = "Not found",
-        tmp = [];
-    location.search
-    //.replace ( "?", "" ) 
-    // this is better, there might be a question mark inside
-    .substr(1)
-        .split("&")
-        .forEach(function (item) {
-        tmp = item.split("=");
-        if (tmp[0] === val) result = decodeURIComponent(tmp[1]);
-    });
-    return result;
-}
-*/
 
 function idealTextColor(hexTripletColor) {
    var nThreshold = 105;
@@ -63,7 +45,7 @@ function formatOption(option) {
    return template;
 }
 
-function showTagsOnKB() {
+function showTagsOnKB(selector) {
    var itemtype = 'knowbaseitem';
 
    // Tags search by user
@@ -92,15 +74,17 @@ function showTagsOnKB() {
    });
 }
 
-   //Quick fix : search event on all webpage
-   $("html").on("tabsload", function( event, ui ) {
-      if (ui.panel.selector == "#ui-tabs-2") {
-         showTagsOnKB(2);
-      }
-      if (ui.panel.selector == "#ui-tabs-1") {
-         showTagsOnKB(1);
-      }
-   });
+//Quick fix : search event on all webpage
+$("html").on("tabsload", function( event, ui ) {
+   console.log(ui.panel.selector);
+
+   if (ui.panel.selector == "#ui-tabs-1") {
+      showTagsOnKB(1);
+   }
+   if (ui.panel.selector == "#ui-tabs-2") {
+      showTagsOnKB(2);
+   }
+});
 
 $(document).ready(function() {
 
