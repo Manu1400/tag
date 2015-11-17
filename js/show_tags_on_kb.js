@@ -45,13 +45,15 @@ function formatOption(option) {
    return template;
 }
 
-function showTagsOnKB(selector) {
+function showTagsOnKB(selector_id, selector_name) {
    var itemtype = 'knowbaseitem';
+
+
 
    // Tags search by user
    var plugin_tag_tag_values = getTagsSearch();
 
-   var data = "itemtype=" + itemtype + "&selector=" + selector;
+   var data = "itemtype=" + itemtype + "&selector=" + selector_id;
 
    if (plugin_tag_tag_values != '') {
       data += "&_plugin_tag_tag_values=" + plugin_tag_tag_values;
@@ -65,9 +67,11 @@ function showTagsOnKB(selector) {
       success: function(msg){
          if ($("#mainformtable").find("[name='plugin_tag_tag_itemtype']").length == 0) {
             $("form table tr").before(msg + hidden_fields);
-            $("form .chosen-select-no-results").select2({
+            $(selector_name + " form .chosen-select-no-results").each(function( index ) {
+               $(this).select2({
                 'formatResult': formatOption,
                 'formatSelection': formatOption
+               });
             });
          }
       }
@@ -79,10 +83,10 @@ $("html").on("tabsload", function( event, ui ) {
    console.log(ui.panel.selector);
 
    if (ui.panel.selector == "#ui-tabs-1") {
-      showTagsOnKB(1);
+      showTagsOnKB(1, ui.panel.selector);
    }
    if (ui.panel.selector == "#ui-tabs-2") {
-      showTagsOnKB(2);
+      showTagsOnKB(2, ui.panel.selector);
    }
 });
 
