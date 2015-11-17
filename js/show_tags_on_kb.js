@@ -51,7 +51,7 @@ function showTagsOnKB(selector) {
    // Tags search by user
    var plugin_tag_tag_values = getTagsSearch();
 
-   var data = "itemtype=" + itemtype;
+   var data = "itemtype=" + itemtype + "&selector=" + selector;
 
    if (plugin_tag_tag_values != '') {
       data += "&_plugin_tag_tag_values=" + plugin_tag_tag_values;

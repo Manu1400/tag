@@ -4,6 +4,13 @@
 function plugin_condition_in_kb_list_tag($params) {
    $where = "";
 
+   // Great hack
+   if ($params['type'] == 'browse') {
+      if (isset($params['_plugin_tag_tag_values'])) {
+         $_SESSION['plugin_tag']['selector_in_kb_browse'] = $params['_plugin_tag_tag_values'];
+      }
+   }
+
    if ($params['type'] == 'search' || $params['type'] == 'browse') { //Security
       if (isset($params['_plugin_tag_tag_values']) && is_array($params['_plugin_tag_tag_values'])) {
          $find = "itemtype = 'Knowbaseitem' ";

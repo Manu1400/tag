@@ -348,6 +348,13 @@ class PluginTagTag extends CommonDropdown {
 
       $selected_id = isset($_REQUEST['_plugin_tag_tag_values']) ? explode(",", $_REQUEST['_plugin_tag_tag_values']) : array();
 
+      // In second tab, conserve tags selected (when have no submit)
+      if ($_REQUEST['selector'] == 2) {
+         if (isset($_SESSION['plugin_tag']['selector_in_kb_browse'])) {
+            $selected_id = array_merge($selected_id, $_SESSION['plugin_tag']['selector_in_kb_browse']);
+         }
+      }
+
       //Note : code duplicated (with tagDropdownMultiple function)
       echo "<select data-placeholder='".__('Choose tags...', 'tag').self::MNBSP."' name='_plugin_tag_tag_values[]'
           id='tag_select' multiple class='chosen-select-no-results' style='width:80%;' >";
