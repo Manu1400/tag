@@ -8,6 +8,8 @@ function plugin_condition_in_kb_list_tag($params) {
    if ($params['type'] == 'browse') {
       if (isset($params['_plugin_tag_tag_values'])) {
          $_SESSION['plugin_tag']['selector_in_kb_browse'] = $params['_plugin_tag_tag_values'];
+      } else if (isset($params['_glpi_csrf_token'])) {
+         $_SESSION['plugin_tag']['selector_in_kb_browse'] = array();
       }
    }
 
