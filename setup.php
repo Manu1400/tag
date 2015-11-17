@@ -37,6 +37,9 @@ function plugin_init_tag() {
    if (strpos($_SERVER['REQUEST_URI'], "front/knowbaseitem.php") !== false) {
       $PLUGIN_HOOKS['add_javascript']['tag'][] = 'js/show_tags_on_kb.js';
    }
+
+   // Add a new hook (of a future GLPI new version !)
+   $PLUGIN_HOOKS['condition_in_kb_list']['tag'] = 'plugin_condition_in_kb_list_tag';
    
    // only on itemtype form
    if (preg_match_all("/.*\/(.*)\.form\.php/", $_SERVER['REQUEST_URI'], $matches) !== false) {

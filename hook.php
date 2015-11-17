@@ -1,5 +1,37 @@
 <?php
 
+// Add condition for support tag filter
+function plugin_condition_in_kb_list_tag($params) {
+   $where = "";
+
+   if ($params['type'] == 'search' || $params['type'] == 'browse') { //Security
+      if (isset($params['_plugin_tag_tag_values']) && is_array($params['_plugin_tag_tag_values'])) {
+         $find = "itemtype = 'Knowbaseitem' ";
+
+         foreach ($params['_plugin_tag_tag_values'] as $value) {
+            $find .= "AND plugin_tag_tags_id = ".$value." ";
+         }
+
+         $items_id = array();
+
+         $tagitem = new PluginTagTagitem();
+         foreach ($tagitem->find($find) as $found) {
+            if (! in_array($found['items_id'], $items_id)) { //unique
+               $items_id[] = $found['items_id'];
+            }
+         }
+
+         if (empty($items_id)) {
+            $where .= " AND 1=0";
+         } else {
+            $where .= " AND glpi_knowbaseitems.id IN (".implode(', ', $items_id).")";
+         }
+      }
+   }
+
+   return $where;
+}
+
 // Plugin hook after *Uninstall*
 function plugin_uninstall_after_tag($item) {
    $tagitem = new PluginTagTagItem();
