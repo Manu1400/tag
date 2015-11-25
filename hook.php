@@ -1,5 +1,28 @@
 <?php
 
+// Add filter by Tags
+function plugin_fusionventory_mirror_restrict_tag($params) {
+
+   list($computer, $result, $agent) = $params;
+
+   $item = new PluginTagTagItem();
+
+   $tags_id_of_mirror = array();
+   foreach ($item->find('itemtype = "PluginFusioninventoryDeploymirror" AND items_id = '.$result['id']) as $data) {
+      $tags_id_of_mirror = $data["plugin_tag_tags_id"];
+   }
+
+   $tags_id_of_ticket = array();
+   foreach ($item->find('itemtype = "Ticket" AND items_id = '.$agent['computers_id']) as $data) {
+      $tags_id_of_ticket = $data["plugin_tag_tags_id"];
+      if (! in_array($data["plugin_tag_tags_id"], $tags_id_of_mirror)) {
+         return false;
+      }
+   }
+
+   return true;
+}
+
 // Add condition for support tag filter
 function plugin_condition_in_kb_list_tag($params) {
    $where = "";

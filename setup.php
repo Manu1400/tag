@@ -40,6 +40,9 @@ function plugin_init_tag() {
 
    // Add a new hook (of a future GLPI new version !)
    $PLUGIN_HOOKS['condition_in_kb_list']['tag'] = 'plugin_condition_in_kb_list_tag';
+
+   // Filter mirror by tags (use new hook of plugin fusioninventory)
+   $PLUGIN_HOOKS['fusionventory_mirror_restrict']['tag'] = 'plugin_fusionventory_mirror_restrict_tag';
    
    // only on itemtype form
    if (preg_match_all("/.*\/(.*)\.form\.php/", $_SERVER['REQUEST_URI'], $matches) !== false) {
